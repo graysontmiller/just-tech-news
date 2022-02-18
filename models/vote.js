@@ -10,7 +10,7 @@ Vote.init(
         primaryKey: true,
         autoIncrement: true
       },
-      user_id: {  //The votes connect to users and posts by including user and post ids in their model, pulling that data through the references to established users and posts.
+      user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
