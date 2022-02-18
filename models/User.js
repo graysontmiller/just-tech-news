@@ -2,6 +2,7 @@
 // This Model class is what we create our own models from using the extends keyword so User inherits all of the functionality the Model class has.
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
+const bcrypt = require('bcrypt');
 
 // create our User model
 class User extends Model {}
@@ -48,6 +49,18 @@ User.init(
       }
     },
     {
+        hooks: {
+            // set up beforeCreate lifecycle "hook" functionality. for password creating at sign up
+           async beforeCreate(newUserData) {  // execute the bcrypt hash function on the plaintext password.
+              newUserData.password = await bcrypt.hash(newUserData.password, 10); //we pass in the userData object that contains the plaintext password in the password property. We also pass in a saltRound value of 10.
+                return newUserData;  // new hashed password is passed to the promise object and the return statement exits the function
+              },
+                // set up beforeUpdate lifecycle "hook" functionality. For password changing
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
+            }
+          },
       sequelize,
       timestamps: false,
       freezeTableName: true,
